@@ -33,8 +33,8 @@ def extract_pixel_training_points(input_img_fp, sample_points_fp):
     img_box = gpd.GeoDataFrame(geometry=[box(*img_bounds)], crs=crs)
     sample_points = sample_points[sample_points.within(img_box.unary_union)]
     # Separate sample points into classes, locations of tree, non-tree segments
-    tree_samples = sample_points[sample_points["class"] == 1]
-    non_tree_samples = sample_points[sample_points["class"] == 0]
+    tree_samples = sample_points[sample_points["ml_class"] == 1]
+    non_tree_samples = sample_points[sample_points["ml_class"] == 0]
     tree_coord_list = [
         f for f in zip(list(tree_samples.geometry.x), list(tree_samples.geometry.y))
     ]
