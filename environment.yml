@@ -1,0 +1,9 @@
+name: use-geospatial
+channels:
+  - defaults
+dependencies:
+  - rasterio
+  - scikit-image
+  - plotly
+  - geopandas
+prefix: /md3_01/awb01/home/twilson-awb01/conda/envs/use-geospatial
