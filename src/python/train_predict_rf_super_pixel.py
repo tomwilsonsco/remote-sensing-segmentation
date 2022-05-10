@@ -12,6 +12,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 from pathlib import Path
 
+def read_reproject_training(sample_points_fp, input_img_fp):
+    """_summary_
+
+    Args:
+        sample_points_fp (str): Full or relative path to the shapefile to be reprojected.
+        input_img_fp (str): Full or relative path to raster having the crs to reproject shapefile to.
+
+    Returns:
+        geopandas.GeoDataFrame: Reprojected geodataframe matching raster crs.
+    """
+    with rio.open(input_img_fp) as f:
+        raster_crs = f.profile["crs"].to_string()
+    sample_points = gpd.read_file(sample_points_fp)
+    return sample_points.to_crs(raster_crs, inplace=True)
+
 
 def extract_pixel_training_points(input_img_fp, sample_points_fp):
     """Extract pixel values training point shape locations and build numpy array for model training.
@@ -24,8 +39,8 @@ def extract_pixel_training_points(input_img_fp, sample_points_fp):
         numpy.array: Pixel values in rows.
         numpy.array: Label classes in rows.
     """
-    # Load sample point data as classifier
-    sample_points = gpd.read_file(sample_points_fp)
+    # Read and reproject training data to same crs as raster
+    sample_points = read_reproject_training(sample_points_fp, input_img_fp)
     # filter training points by image extent
     with rio.open(input_img_fp) as f:
         img_bounds = f.bounds
